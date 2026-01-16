@@ -555,11 +555,20 @@
             const uniqueId = 'birthday_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
             localStorage.setItem(uniqueId, JSON.stringify(birthdayData));
             
-            const currentPath = window.location.pathname;
-            const baseUrl = window.location.origin + currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
-            const shareLink = `${baseUrl}celebrate.html?id=${uniqueId}`;
+            const baseUrl = window.location.origin + window.location.pathname.replace('index.html', '');
+            const params = new URLSearchParams({
+                name: encodeURIComponent(name),
+                gender: encodeURIComponent(gender),
+                message: encodeURIComponent(message),
+                photo1: photos[0] || '',
+                photo2: photos[1] || '',
+                photo3: photos[2] || '',
+                photo4: photos[3] || ''
+            });
+            
+            const fullLink = `${baseUrl}celebrate.html?${params.toString()}`;
 
-            linkText.textContent = shareLink;
+            linkText.textContent = fullLink;
             linkDisplay.classList.add('show');
             successMsg.classList.remove('show');
         });
