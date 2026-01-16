@@ -567,23 +567,24 @@
             
             const fullLink = `${baseUrl}celebrate.html?${params.toString()}`;
             
+            console.log('Link generated:', fullLink);
+            console.log('Link length:', fullLink.length);
+            
             linkText.textContent = fullLink;
             linkDisplay.classList.add('show');
             successMsg.classList.remove('show');
             warningMsg.classList.remove('show');
             
-            // Show success message - link should work on all browsers with 1 photo
-            if (fullLink.length > 2000) {
-                warningMsg.textContent = '✅ Link generated! Works on all browsers and devices.';
-                warningMsg.style.color = '#4CAF50';
-                warningMsg.classList.add('show');
-            }
+            // Always show success message
+            warningMsg.textContent = `✅ Link generated! (${fullLink.length} characters)`;
+            warningMsg.style.color = '#4CAF50';
+            warningMsg.classList.add('show');
 
             submitBtn.textContent = originalText;
             submitBtn.disabled = false;
             
             setTimeout(() => {
-                linkDisplay.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                linkDisplay.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }, 100);
         });
 
