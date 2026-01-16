@@ -264,13 +264,34 @@
 
         window.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
-            const dataId = urlParams.get('id');
             
-            if (dataId) {
-                const storedData = localStorage.getItem(dataId);
-                if (storedData) {
-                    birthdayData = JSON.parse(storedData);
-                    initializePage();
+            // Try to get data from URL parameters first
+            const name = urlParams.get('name');
+            const gender = urlParams.get('gender');
+            const message = urlParams.get('message');
+            const photo1 = urlParams.get('photo1');
+            const photo2 = urlParams.get('photo2');
+            const photo3 = urlParams.get('photo3');
+            const photo4 = urlParams.get('photo4');
+            
+            if (name) {
+                // Data from URL parameters (works on any device)
+                birthdayData = {
+                    name: decodeURIComponent(name),
+                    gender: gender ? decodeURIComponent(gender) : '',
+                    message: message ? decodeURIComponent(message) : '',
+                    photos: [photo1, photo2, photo3, photo4].filter(p => p)
+                };
+                initializePage();
+            } else {
+                // Fallback to localStorage (old method)
+                const dataId = urlParams.get('id');
+                if (dataId) {
+                    const storedData = localStorage.getItem(dataId);
+                    if (storedData) {
+                        birthdayData = JSON.parse(storedData);
+                        initializePage();
+                    }
                 }
             }
         });
