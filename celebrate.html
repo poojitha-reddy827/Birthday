@@ -269,18 +269,23 @@
             const name = urlParams.get('name');
             const gender = urlParams.get('gender');
             const message = urlParams.get('message');
+            const sender = urlParams.get('sender');
+            const date = urlParams.get('date');
+            const color = urlParams.get('color');
+            const theme = urlParams.get('theme');
             const photo1 = urlParams.get('photo1');
-            const photo2 = urlParams.get('photo2');
-            const photo3 = urlParams.get('photo3');
-            const photo4 = urlParams.get('photo4');
             
             if (name) {
                 // Data from URL parameters (works on any device)
                 birthdayData = {
                     name: decodeURIComponent(name),
+                    senderName: sender ? decodeURIComponent(sender) : '',
+                    date: date ? decodeURIComponent(date) : '',
+                    color: color ? decodeURIComponent(color) : '#667eea',
                     gender: gender ? decodeURIComponent(gender) : '',
+                    theme: theme ? decodeURIComponent(theme) : '',
                     message: message ? decodeURIComponent(message) : '',
-                    photos: [photo1, photo2, photo3, photo4].filter(p => p)
+                    photos: photo1 ? [photo1] : []
                 };
                 initializePage();
             } else {
@@ -291,7 +296,11 @@
                     if (storedData) {
                         birthdayData = JSON.parse(storedData);
                         initializePage();
+                    } else {
+                        alert('No birthday data found! Please ask for a new link.');
                     }
+                } else {
+                    alert('Invalid link! Please check the URL.');
                 }
             }
         });
