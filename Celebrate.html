@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Surprise!</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Arial', sans-serif; overflow: hidden; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 100vh; display: flex; align-items: center; justify-content: center; perspective: 1000px; }
+        body.girl-theme { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        body.boy-theme { background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); }
+        
+        .container { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; padding: 20px; overflow: hidden; }
+        
+        .page { display: none; width: 100%; height: 100%; position: absolute; top: 0; left: 0; flex-direction: column; align-items: center; justify-content: center; animation: fadeInScale 0.8s ease-out; }
+        .page.active { display: flex; }
+        
+        @keyframes fadeInScale { 0% { opacity: 0; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
+        @keyframes flyUp { 0% { opacity: 1; transform: translateY(0) rotate(0deg); } 100% { opacity: 0; transform: translateY(-900px) rotate(720deg); } }
+        @keyframes balloonFloat { 0% { opacity: 1; transform: translateY(0) rotate(0deg) translateX(0); } 100% { opacity: 0; transform: translateY(-900px) rotate(720deg) translateX(30px); } }
+        @keyframes cakeOpen { 0%, 90% { transform: scaleY(1) rotateX(0deg); } 95%, 100% { transform: scaleY(0.1) rotateX(15deg); } }
+        @keyframes photoFromCake { 0% { opacity: 0; transform: scale(0.2) translateY(50px); } 50% { opacity: 1; } 100% { opacity: 0; transform: scale(1) translateY(-300px); } }
+        @keyframes sparkle { 0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); } 50% { opacity: 0.2; transform: scale(1.5) rotate(180deg); } }
+        @keyframes sparkleIntense { 0%, 100% { opacity: 1; transform: scale(1); } 20% { opacity: 0.3; transform: scale(1.2); } 40% { opacity: 1; transform: scale(1); } }
+        @keyframes flowerBlink { 0%, 100% { opacity: 1; transform: rotate(0deg) scale(1); } 30% { opacity: 0.3; transform: rotate(20deg) scale(1.1); } 60% { opacity: 1; transform: rotate(-20deg) scale(1); } }
+        @keyframes flowerOpen { 0% { opacity: 0; transform: scale(0.3) rotate(-180deg); } 50% { opacity: 1; transform: scale(1.2) rotate(0deg); } 100% { opacity: 0; transform: scale(0.8) rotate(180deg) translateY(-250px); } }
+        @keyframes photoFloat { 0% { opacity: 0; transform: scale(0) rotate(-180deg); } 20% { opacity: 1; transform: scale(1.1) rotate(0deg); } 80% { opacity: 1; transform: scale(1) rotate(10deg); } 100% { opacity: 0; transform: scale(0.5) rotate(180deg) translateY(-200px); } }
+        
+        .page1 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important; }
+        body.girl-theme .page1 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important; }
+        body.boy-theme .page1 { background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%) !important; }
+        
+        .envelope { width: 350px; height: 240px; background: white; border-radius: 15px; box-shadow: 0 15px 50px rgba(0,0,0,0.25); cursor: pointer; animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55); transition: all 0.4s ease; }
+        .envelope:hover { transform: scale(1.08) translateY(-5px); box-shadow: 0 25px 70px rgba(0,0,0,0.35); }
+        @keyframes bounceIn { 0% { transform: scale(0) rotateY(-180deg); opacity: 0; } 50% { transform: scale(1.1); } 100% { transform: scale(1) rotateY(0deg); opacity: 1; } }
+        .envelope-text { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; font-size: 26px; font-weight: bold; color: #667eea; text-align: center; line-height: 1.6; letter-spacing: 0.5px; }
+        body.girl-theme .envelope-text { color: #f5576c; }
+        body.boy-theme .envelope-text { color: #FF8C00; }
+        
+        .page2, .page3, .page4, .page5 { background: white; flex-direction: column; padding: 40px; border-radius: 20px; max-width: 550px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); position: relative; overflow: hidden; }
+        
+        .photo-container { position: relative; margin: 20px auto; }
+        .photo-display { width: 350px; height: 350px; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; border: 5px solid #f0f0f0; animation: photoZoom 0.8s ease-out; }
+        .photo-display img { width: 100%; height: 100%; object-fit: cover; }
+        @keyframes photoZoom { 0% { opacity: 0; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
+        
+        .page-message { text-align: center; font-size: 28px; color: #667eea; font-weight: bold; margin: 20px 0; animation: slideDown 0.8s ease-out; }
+        body.girl-theme .page-message { color: #f5576c; }
+        body.boy-theme .page-message { color: #FF8C00; }
+        @keyframes slideDown { 0% { opacity: 0; transform: translateY(-20px); } 100% { opacity: 1; transform: translateY(0); } }
+        
+        .balloon-container { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; }
+        .balloon { position: absolute; font-size: 50px; line-height: 1; }
+        .balloon-1 { bottom: 20%; left: 5%; }
+        .balloon-2 { top: 15%; left: 10%; }
+        .balloon-3 { top: 10%; right: 12%; }
+        .balloon-4 { bottom: 25%; right: 8%; }
+        .balloon-5 { top: 50%; left: 8%; }
+        .balloon-6 { top: 40%; right: 10%; }
+        
+        .cake-container { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; }
+        .cake-piece { position: absolute; font-size: 50px; line-height: 1; }
+        .cake-1 { top: 15%; left: 8%; animation: cakeOpen 8s ease-in-out infinite, photoFromCake 2.5s ease-out 5s forwards; }
+        .cake-2 { top: 12%; right: 8%; animation: cakeOpen 8s ease-in-out infinite 0.5s, photoFromCake 2.5s ease-out 5.5s forwards; }
+        .cake-3 { bottom: 15%; left: 10%; animation: cakeOpen 8s ease-in-out infinite 1s, photoFromCake 2.5s ease-out 6s forwards; }
+        .cake-4 { bottom: 12%; right: 10%; animation: cakeOpen 8s ease-in-out infinite 1.5s, photoFromCake 2.5s ease-out 6.5s forwards; }
+        
+        .photo-from-cake { position: absolute; width: 80px; height: 80px; border-radius: 8px; object-fit: cover; opacity: 0; }
+        .photo-from-cake-1 { top: 15%; left: 8%; animation: photoFromCake 2.5s ease-out 5s forwards; }
+        .photo-from-cake-2 { top: 12%; right: 8%; animation: photoFromCake 2.5s ease-out 5.5s forwards; }
+        .photo-from-cake-3 { bottom: 15%; left: 10%; animation: photoFromCake 2.5s ease-out 6s forwards; }
+        .photo-from-cake-4 { bottom: 12%; right: 10%; animation: photoFromCake 2.5s ease-out 6.5s forwards; }
+        
+        .star-container { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; }
+        .star-1 { position: absolute; top: 5%; left: 5%; font-size: 40px; animation: sparkleIntense 1s ease-in-out infinite; line-height: 1; }
+        .star-2 { position: absolute; top: 10%; right: 8%; font-size: 35px; animation: sparkle 1.2s ease-in-out infinite 0.2s; line-height: 1; }
+        .star-3 { position: absolute; bottom: 8%; left: 8%; font-size: 35px; animation: sparkle 1.2s ease-in-out infinite 0.4s; line-height: 1; }
+        .star-4 { position: absolute; bottom: 5%; right: 5%; font-size: 40px; animation: sparkleIntense 1s ease-in-out infinite 0.3s; line-height: 1; }
+        
+        .flower-container { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; }
+        .flower { position: absolute; font-size: 50px; line-height: 1; }
+        .flower-1 { top: 8%; left: 5%; animation: flowerBlink 3s ease-in-out infinite, flowerOpen 2s ease-out 6s forwards; }
+        .flower-2 { top: 10%; right: 6%; animation: flowerBlink 3s ease-in-out infinite 0.3s, flowerOpen 2s ease-out 6.3s forwards; }
+        .flower-3 { bottom: 10%; left: 7%; animation: flowerBlink 3s ease-in-out infinite 0.6s, flowerOpen 2s ease-out 6.6s forwards; }
+        .flower-4 { bottom: 8%; right: 5%; animation: flowerBlink 3s ease-in-out infinite 0.9s, flowerOpen 2s ease-out 6.9s forwards; }
+        
+        .photo-from-flower { position: absolute; width: 70px; height: 70px; border-radius: 50%; object-fit: cover; opacity: 0; }
+        .photo-from-flower-1 { top: 8%; left: 5%; animation: photoFloat 2.5s ease-out 6s forwards; }
+        .photo-from-flower-2 { top: 10%; right: 6%; animation: photoFloat 2.5s ease-out 6.3s forwards; }
+        .photo-from-flower-3 { bottom: 10%; left: 7%; animation: photoFloat 2.5s ease-out 6.6s forwards; }
+        .photo-from-flower-4 { bottom: 8%; right: 5%; animation: photoFloat 2.5s ease-out 6.9s forwards; }
+        
+        .page6 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        body.girl-theme .page6 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        body.boy-theme .page6 { background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); }
+        
+        .final-content { background: white; border-radius: 20px; padding: 40px; max-width: 650px; text-align: center; animation: fadeInScale 0.8s ease-out; }
+        .final-title { font-size: 48px; color: #667eea; margin-bottom: 20px; font-weight: bold; }
+        body.girl-theme .final-title { color: #f5576c; }
+        body.boy-theme .final-title { color: #FF8C00; }
+        .final-messages { font-size: 18px; color: #333; line-height: 2.2; margin: 20px 0; }
+        .celebration-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 30px; }
+        .celebrate-btn { padding: 20px; font-size: 32px; border: none; border-radius: 15px; cursor: pointer; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); transition: all 0.3s ease; line-height: 1; }
+        body.girl-theme .celebrate-btn { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        body.boy-theme .celebrate-btn { background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); }
+        .celebrate-btn:hover { transform: scale(1.1); }
+        
+        .nav-buttons { display: flex; gap: 20px; justify-content: center; margin-top: 30px; }
+        .nav-btn { padding: 12px 30px; font-size: 16px; border: none; border-radius: 25px; cursor: pointer; background: #667eea; color: white; font-weight: bold; transition: all 0.3s ease; }
+        body.girl-theme .nav-btn { background: #f5576c; }
+        body.boy-theme .nav-btn { background: #FF8C00; }
+        .nav-btn:hover { transform: scale(1.05); }
+        .nav-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .page-counter { position: absolute; top: 20px; right: 20px; font-size: 16px; background: white; padding: 10px 20px; border-radius: 20px; color: #667eea; font-weight: bold; }
+        body.girl-theme .page-counter { color: #f5576c; }
+        body.boy-theme .page-counter { color: #FF8C00; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Page 1: Envelope -->
+        <div class="page page1 active">
+            <div class="envelope" onclick="nextPage()">
+                <div class="envelope-text">
+                    <div>Hi!&nbsp;<span id="envelopeName">Friend</span></div>
+                    <div>Open Now</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Page 2: Photo 1 -->
+        <div class="page page2">
+            <div class="balloon-container">
+                <div class="balloon balloon-1">🎈</div>
+                <div class="balloon balloon-2">🎈</div>
+                <div class="balloon balloon-3">🎈</div>
+                <div class="balloon balloon-4">🎈</div>
+            </div>
+            <div class="page-counter">1 / 4</div>
+            <div class="page-message">Look how cute!</div>
+            <div class="photo-container">
+                <div class="photo-display">
+                    <img id="photo1" src="" alt="Photo 1">
+                </div>
+            </div>
+            <div style="text-align: center; font-size: 18px; color: #667eea; margin-top: 20px; font-weight: bold;">Beautiful Moment!</div>
+            <div class="nav-buttons">
+                <button class="nav-btn" onclick="prevPage()">Back</button>
+                <button class="nav-btn" onclick="nextPage()">Next</button>
+            </div>
+        </div>
+        
+        <!-- Page 3: Photo 2 with Opening Cakes & Photos Inside -->
+        <div class="page page3">
+            <div class="cake-container">
+                <div class="cake-piece cake-1">🎂</div>
+                <div class="cake-piece cake-2">🎂</div>
+                <div class="cake-piece cake-3">🍰</div>
+                <div class="cake-piece cake-4">🍰</div>
+                <img class="photo-from-cake photo-from-cake-1" id="cake-photo-1" src="" alt="">
+                <img class="photo-from-cake photo-from-cake-2" id="cake-photo-2" src="" alt="">
+                <img class="photo-from-cake photo-from-cake-3" id="cake-photo-3" src="" alt="">
+                <img class="photo-from-cake photo-from-cake-4" id="cake-photo-4" src="" alt="">
+            </div>
+            <div class="page-counter">2 / 4</div>
+            <div class="page-message">Sweetness Overload!</div>
+            <div class="photo-container">
+                <div class="photo-display">
+                    <img id="photo2" src="" alt="Photo 2">
+                </div>
+            </div>
+            <div style="text-align: center; font-size: 18px; color: #667eea; margin-top: 20px; font-weight: bold;">Amazing Times!</div>
+            <div class="nav-buttons">
+                <button class="nav-btn" onclick="prevPage()">Back</button>
+                <button class="nav-btn" onclick="nextPage()">Next</button>
+            </div>
+        </div>
+        
+        <!-- Page 4: Photo 3 with Sparkling Stars -->
+        <div class="page page4">
+            <div class="star-container">
+                <div class="star-1">⭐</div>
+                <div class="star-2">✨</div>
+                <div class="star-3">⭐</div>
+                <div class="star-4">✨</div>
+            </div>
+            <div class="page-counter">3 / 4</div>
+            <div class="page-message">Shining Bright!</div>
+            <div class="photo-container">
+                <div class="photo-display">
+                    <img id="photo3" src="" alt="Photo 3">
+                </div>
+            </div>
+            <div style="text-align: center; font-size: 18px; color: #667eea; margin-top: 20px; font-weight: bold;">Precious Memories!</div>
+            <div class="nav-buttons">
+                <button class="nav-btn" onclick="prevPage()">Back</button>
+                <button class="nav-btn" onclick="nextPage()">Next</button>
+            </div>
+        </div>
+        
+        <!-- Page 5: Photo 4 with Blinking Flowers & Photos Coming Out -->
+        <div class="page page5">
+            <div class="flower-container">
+                <div class="flower flower-1">🌸</div>
+                <div class="flower flower-2">🌺</div>
+                <div class="flower flower-3">🌸</div>
+                <div class="flower flower-4">🌼</div>
+                <img class="photo-from-flower photo-from-flower-1" id="flower-photo-1" src="" alt="">
+                <img class="photo-from-flower photo-from-flower-2" id="flower-photo-2" src="" alt="">
+                <img class="photo-from-flower photo-from-flower-3" id="flower-photo-3" src="" alt="">
+                <img class="photo-from-flower photo-from-flower-4" id="flower-photo-4" src="" alt="">
+            </div>
+            <div class="page-counter">4 / 4</div>
+            <div class="page-message">Perfect Moments!</div>
+            <div class="photo-container">
+                <div class="photo-display">
+                    <img id="photo4" src="" alt="Photo 4">
+                </div>
+            </div>
+            <div style="text-align: center; font-size: 18px; color: #667eea; margin-top: 20px; font-weight: bold;">Forever Cherished!</div>
+            <div class="nav-buttons">
+                <button class="nav-btn" onclick="prevPage()">Back</button>
+                <button class="nav-btn" onclick="nextPage()">Next</button>
+            </div>
+        </div>
+        
+        <!-- Page 6: Final Celebration -->
+        <div class="page page6">
+            <div style="position: absolute; top: 50px; left: 50px; font-size: 50px; animation: flyUp 5s ease-in forwards; line-height: 1;">🎈</div>
+            <div style="position: absolute; top: 50px; right: 50px; font-size: 50px; animation: cakeOpen 3s ease-in-out infinite; line-height: 1;">🎂</div>
+            <div style="position: absolute; bottom: 50px; left: 50px; font-size: 50px; animation: sparkle 1.5s ease-in-out infinite; line-height: 1;">🌸</div>
+            <div style="position: absolute; bottom: 50px; right: 50px; font-size: 50px; animation: flowerBlink 2.5s ease-in-out infinite; line-height: 1;">⭐</div>
+            
+            <div class="final-content">
+                <div class="final-title">HAPPY BIRTHDAY<br><span id="finalName">Friend</span>!</div>
+                <div class="final-messages">
+                    <div>Smile Big!</div>
+                    <div>You deserve all the happiness!</div>
+                    <div>Thank you for being amazing!</div>
+                    <div>Have the best day ever!</div>
+                </div>
+                <div style="margin-top: 20px; font-size: 16px; color: #666;">
+                    <div>💌 Personal Message:</div>
+                    <div id="finalMessage" style="font-style: italic; margin-top: 10px;"></div>
+                </div>
+                <div class="celebration-buttons">
+                    <button class="celebrate-btn" onclick="celebrate('smile')">😊</button>
+                    <button class="celebrate-btn" onclick="celebrate('laugh')">😂</button>
+                    <button class="celebrate-btn" onclick="celebrate('dance')">💃</button>
+                    <button class="celebrate-btn" onclick="celebrate('clap')">👏</button>
+                </div>
+                <div class="nav-buttons" style="margin-top: 30px;">
+                    <button class="nav-btn" onclick="prevPage()">Back</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        let birthdayData = null;
+        let photos = [];
+
+        window.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const dataId = urlParams.get('id');
+            
+            if (dataId) {
+                const storedData = localStorage.getItem(dataId);
+                if (storedData) {
+                    birthdayData = JSON.parse(storedData);
+                    initializePage();
+                }
+            }
+        });
+
+        function initializePage() {
+            if (!birthdayData) return;
+            
+            const theme = document.body;
+            // Apply girl theme if gender is Female (case-insensitive)
+            if (birthdayData.gender && birthdayData.gender.toLowerCase() === 'female') {
+                theme.classList.add('girl-theme');
+            }
+            // Apply boy theme if gender is Male (case-insensitive)
+            else if (birthdayData.gender && birthdayData.gender.toLowerCase() === 'male') {
+                theme.classList.add('boy-theme');
+            }
+            
+            photos = birthdayData.photos.filter(function(p) { return p; });
+            document.getElementById('envelopeName').textContent = birthdayData.name;
+            document.getElementById('finalName').textContent = birthdayData.name;
+            
+            if (birthdayData.message) {
+                document.getElementById('finalMessage').textContent = '"' + birthdayData.message + '"';
+            }
+            
+            if (photos.length > 0) document.getElementById('photo1').src = photos[0];
+            if (photos.length > 1) document.getElementById('photo2').src = photos[1];
+            if (photos.length > 2) document.getElementById('photo3').src = photos[2];
+            if (photos.length > 3) document.getElementById('photo4').src = photos[3];
+            
+            // Populate cake photos (flying from cake on page 3)
+            if (photos.length > 1) {
+                document.getElementById('cake-photo-1').src = photos[1];
+                if (photos.length > 2) document.getElementById('cake-photo-2').src = photos[2];
+                if (photos.length > 3) document.getElementById('cake-photo-3').src = photos[3];
+                if (photos.length > 0) document.getElementById('cake-photo-4').src = photos[0];
+            }
+            
+            // Populate flower photos (flying from flowers on page 5)
+            if (photos.length > 0) {
+                document.getElementById('flower-photo-1').src = photos[0];
+                if (photos.length > 1) document.getElementById('flower-photo-2').src = photos[1];
+                if (photos.length > 2) document.getElementById('flower-photo-3').src = photos[2];
+                if (photos.length > 3) document.getElementById('flower-photo-4').src = photos[3];
+            }
+        }
+
+        function showPage(pageNum) {
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(function(page) {
+                page.classList.remove('active');
+            });
+            
+            const targetPage = document.querySelector('.page' + pageNum);
+            if (targetPage) {
+                targetPage.classList.add('active');
+            }
+        }
+
+        function nextPage() {
+            if (currentPage < 6) {
+                currentPage++;
+                showPage(currentPage);
+            }
+        }
+
+        function prevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                showPage(currentPage);
+            }
+        }
+
+        function celebrate(type) {
+            for (let i = 0; i < 30; i++) {
+                createConfetti();
+            }
+            showFloatingReaction(type);
+        }
+
+        function createConfetti() {
+            const confetti = document.createElement('div');
+            confetti.style.position = 'fixed';
+            confetti.style.width = '10px';
+            confetti.style.height = '10px';
+            confetti.style.background = ['#667eea', '#764ba2', '#FFD700', '#FF69B4', '#00CED1'][Math.floor(Math.random() * 5)];
+            confetti.style.left = Math.random() * window.innerWidth + 'px';
+            confetti.style.top = '0px';
+            confetti.style.pointerEvents = 'none';
+            confetti.style.borderRadius = '50%';
+            document.body.appendChild(confetti);
+            
+            let top = 0;
+            const interval = setInterval(function() {
+                top += 5;
+                confetti.style.top = top + 'px';
+                confetti.style.opacity = 1 - (top / 800);
+                if (top > 800) {
+                    clearInterval(interval);
+                    confetti.remove();
+                }
+            }, 30);
+        }
+
+        function showFloatingReaction(type) {
+            const reactions = { smile: '😊', laugh: '😂', dance: '💃', clap: '👏' };
+            const reaction = document.createElement('div');
+            reaction.textContent = reactions[type];
+            reaction.style.position = 'fixed';
+            reaction.style.left = Math.random() * window.innerWidth + 'px';
+            reaction.style.top = window.innerHeight / 2 + 'px';
+            reaction.style.fontSize = '60px';
+            reaction.style.pointerEvents = 'none';
+            reaction.style.opacity = '1';
+            reaction.style.lineHeight = '1';
+            
+            document.body.appendChild(reaction);
+            
+            let top = window.innerHeight / 2;
+            const interval = setInterval(function() {
+                top -= 3;
+                reaction.style.top = top + 'px';
+                reaction.style.opacity = 1 - ((window.innerHeight / 2 - top) / 200);
+                if (top < window.innerHeight / 2 - 200) {
+                    clearInterval(interval);
+                    reaction.remove();
+                }
+            }, 30);
+        }
+    </script>
+</body>
+</html>
