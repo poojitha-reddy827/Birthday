@@ -557,9 +557,9 @@
             
             const baseUrl = window.location.origin + window.location.pathname.replace('index.html', '');
             const params = new URLSearchParams({
-                name: encodeURIComponent(name),
-                gender: encodeURIComponent(gender),
-                message: encodeURIComponent(message),
+                name: encodeURIComponent(birthdayData.name),
+                gender: encodeURIComponent(birthdayData.gender),
+                message: encodeURIComponent(birthdayData.message),
                 photo1: photos[0] || '',
                 photo2: photos[1] || '',
                 photo3: photos[2] || '',
